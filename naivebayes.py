@@ -4,7 +4,7 @@ import math
 import sys
 import glob
 import pickle
-from dicts import DefaultDict
+import collections
 
 def naivebayes (dirs):
     """Train and return a naive Bayes classifier.  
@@ -14,9 +14,9 @@ def naivebayes (dirs):
         the class"""
     categories = []
     for dir in dirs:
-	print(dir)
-	countdict = files2countdict(glob.glob(dir+"/*"))
-	categories.append((dir,countdict))
+        print(dir)
+        countdict = files2countdict(glob.glob(dir+"/*"))
+        categories.append((dir,countdict))
     return categories
 
 def classify (categories, filename):
@@ -26,21 +26,21 @@ def classify (categories, filename):
     answers = []
     print('Classifying ', filename)
     for c in categories:
-	score = 0
-	for word in open(filename).read().split():
-	    word = word.lower()
-	    score += math.log(c[1].get(word,1))
-	answers.append((score,c[0]))
+        score = 0
+        for word in open(filename).read().split():
+            word = word.lower()
+            score += math.log(c[1].get(word,1))
+        answers.append((score,c[0]))
     answers.sort()
     return answers
 
 def files2countdict (files):
     """Given an array of filenames.
         Return: a dictionary (keys=words, values= # of times that word occurred)."""
-    d = DefaultDict(0)
+    d = collections.defaultdict(0)
     for file in files:
-	for word in open(file).read().split():
-	    d[word.lower()] += 1
+	    for word in open(file).read().split():
+	        d[word.lower()] += 1
     return d
 	
 
